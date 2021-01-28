@@ -1,0 +1,28 @@
+name: keep me green
+
+on:
+  schedule:
+    - cron: "41 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  greening:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Make a Commit
+        run: |
+          username=${{ github.repository_owner }}
+          git config user.email ${username}@users.noreply.github.com
+          git config user.name ${username}
+          git commit --allow-empty -m "green!"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
